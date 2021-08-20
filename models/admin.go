@@ -80,6 +80,12 @@ var Admin = `<html lang="zh-cn">
                         width: 80,
                         align: 'center',
                     }, {
+                        field: 'Hack',
+                        title: '屏蔽',
+                        edit: 'text',
+                        width: 80,
+                        align: 'center',
+                    }, {
                         field: 'Help',
                         title: '助力',
                         edit: 'text',
@@ -208,12 +214,16 @@ func Count() string {
 		if ck.CreateAt == dt {
 			tc++
 		}
-		// if ck.ScanedAt == dt {
-		// 	ts++
-		// }
-		// if ck.LoseAt == dt {
-		// 	tl++
-		// }
 	}
-	return fmt.Sprintf("总数%d,有效%d,无效%d,今日失效%d,今日扫码%d,今日新增%d", zs, yx, wx, tc, ts, tl)
+	jps := []JdCookiePool{}
+	db.Find(&jps)
+	for _, jp := range jps {
+		if jp.CreateAt == dt {
+			ts++
+		}
+		if jp.LoseAt == dt {
+			tl++
+		}
+	}
+	return fmt.Sprintf("总数%d,有效%d,无效%d,今日失效%d,今日扫码%d,今日新增%d", zs, yx, wx, tl, ts, tc)
 }
